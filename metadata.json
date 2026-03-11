@@ -1,0 +1,5 @@
+{
+  "name": "Full Stack News App",
+  "description": "A full-stack news application built with Next.js, Express, MongoDB, and Tailwind CSS. Features a public news feed and a protected dashboard for managing articles.",
+  "requestFramePermissions": []
+}
