@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import AdUnit from '@/components/AdUnit';
+import Image from 'next/image';
 
 interface News {
   _id: string;
@@ -158,15 +159,17 @@ export default function Home() {
             <div className="lg:col-span-6 order-1 lg:order-2 border-b lg:border-b-0 lg:border-l lg:border-r border-slate-200 lg:px-8 pb-8 lg:pb-0">
               <Link href={`/news/${heroArticle._id}`} className="block group">
                 {heroArticle.imageUrl && (
-                  <div className="w-full aspect-video bg-slate-100 relative mb-6 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={heroArticle.imageUrl} 
-                      alt={heroArticle.title} 
-                      className="object-contain w-full h-full transition-transform duration-700 group-hover:scale-105" 
-                    />
-                  </div>
-                )}
+  <div className="w-full aspect-video bg-slate-100 relative mb-6 overflow-hidden">
+    <Image 
+      src={heroArticle.imageUrl} 
+      alt={heroArticle.title} 
+      fill
+      sizes="(max-width: 768px) 100vw, 50vw"
+      className="object-contain transition-transform duration-700 group-hover:scale-105" 
+      priority // Add priority to the hero image for better LCP
+    />
+  </div>
+)}
                 <h2 className="text-4xl md:text-5xl font-bold font-serif leading-tight mb-4 group-hover:text-slate-700 transition-colors text-center">
                   {heroArticle.title}
                 </h2>
