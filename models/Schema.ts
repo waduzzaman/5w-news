@@ -1,13 +1,30 @@
 import mongoose from 'mongoose';
 
+// Helper function to create URL-friendly slug from title
+function createSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 // --- NEWS MODEL ---
 const newsSchema = new mongoose.Schema({
   title: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
   content: { type: String, required: true },
   imageUrl: { type: String },
   author: { type: String, required: true },
   category: { type: String, default: 'General' },
   createdAt: { type: Date, default: Date.now },
+});
+
+// Auto-generate slug before saving
+newsSchema.pre('save', function(next) {
+  if (this.isModified('title')) {
+    this.slug = createSlug(this.title);
+  }
+  next();
 });
 
 // --- AD MODEL ---

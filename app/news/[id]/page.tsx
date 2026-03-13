@@ -15,46 +15,55 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   
-  try {
-    await connectDB();
-    const article = await News.findById(id);
-    
-    if (!article) {
-      return {
-        title: 'Article Not Found | The Daily Chronicle',
-      };
-    }
-
+  // Check if id is a valid ObjectId or a slug
+  const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+  
+  let article;
+  if (isValidObjectId) {
+    article = await News.findById(id);
+  } else {
+    article = await News.findOne({ slug: id });
+  }
+  
+  if (!article) {
     return {
-      title: `${article.title} | The Daily Chronicle`,
-      description: article.content.substring(0, 160),
-      openGraph: {
-        title: article.title,
-        description: article.content.substring(0, 160),
-        type: 'article',
-        publishedTime: article.createdAt,
-        authors: [article.author],
-        section: article.category,
-        tags: [article.category],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: article.title,
-        description: article.content.substring(0, 160),
-      },
-    };
-  } catch (error) {
-    return {
-      title: 'The Daily Chronicle',
+      title: 'Article Not Found | The Daily Chronicle',
     };
   }
+
+  return {
+    title: `${article.title} | The Daily Chronicle`,
+    description: article.content.substring(0, 160),
+    openGraph: {
+      title: article.title,
+      description: article.content.substring(0, 160),
+      type: 'article',
+      publishedTime: article.createdAt.toISOString(),
+      authors: [article.author],
+      section: article.category,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.content.substring(0, 160),
+    },
+  };
 }
 
 export default async function NewsArticle({ params }: Props) {
   const { id } = await params;
   
   await connectDB();
-  const article = await News.findById(id);
+  
+  // Check if id is a valid ObjectId or a slug
+  const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+  
+  let article;
+  if (isValidObjectId) {
+    article = await News.findById(id);
+  } else {
+    article = await News.findOne({ slug: id });
+  }
   
   if (!article) {
     notFound();

@@ -13,6 +13,7 @@ interface News {
   imageUrl?: string;
   author: string;
   category?: string;
+  slug?: string;
   createdAt: string;
 }
 
@@ -102,7 +103,7 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredNews.map((item) => (
-                <Link key={item._id} href={`/news/${item._id}`} className="block group flex flex-col h-full border-b border-slate-200 pb-6">
+                <Link key={item._id} href={`/news/${item.slug || item._id}`} className="block group flex flex-col h-full border-b border-slate-200 pb-6">
                   {item.imageUrl && (
                     <div className="w-full aspect-[3/2] bg-slate-100 relative mb-4 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -135,7 +136,7 @@ export default function Home() {
             {/* Left Column: Secondary Stories */}
             <div className="lg:col-span-3 flex flex-col gap-6 order-2 lg:order-1">
               {topStories.slice(0, 2).map((item) => (
-                <Link key={item._id} href={`/news/${item._id}`} className="block group border-b border-slate-200 pb-6 last:border-0">
+                <Link key={item._id} href={`/news/${item.slug || item._id}`} className="block group border-b border-slate-200 pb-6 last:border-0">
                   <div className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">
                     {item.category || 'News'}
                   </div>
@@ -157,7 +158,7 @@ export default function Home() {
 
             {/* Center Column: Hero Article */}
             <div className="lg:col-span-6 order-1 lg:order-2 border-b lg:border-b-0 lg:border-l lg:border-r border-slate-200 lg:px-8 pb-8 lg:pb-0">
-              <Link href={`/news/${heroArticle._id}`} className="block group">
+              <Link href={`/news/${heroArticle.slug || heroArticle._id}`} className="block group">
                 {heroArticle.imageUrl && (
   <div className="w-full aspect-video bg-slate-100 relative mb-6 overflow-hidden">
     <Image 
@@ -221,7 +222,7 @@ export default function Home() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {(techNews.length > 0 ? techNews : gridArticles.slice(0, 3)).map((item) => (
-                <Link key={item._id} href={`/news/${item._id}`} className="block group flex flex-col h-full">
+                <Link key={item._id} href={`/news/${item.slug || item._id}`} className="block group flex flex-col h-full">
                   {item.imageUrl && (
                     <div className="w-full aspect-[3/2] bg-slate-100 relative mb-4 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -253,7 +254,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               {artsNews.length > 0 ? (
                 <>
-                  <Link href={`/news/${artsNews[0]._id}`} className="block group">
+                  <Link href={`/news/${artsNews[0].slug || artsNews[0]._id}`} className="block group">
                     {artsNews[0].imageUrl && (
                       <div className="w-full aspect-square md:aspect-[4/3] bg-slate-100 relative overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -266,7 +267,7 @@ export default function Home() {
                     )}
                   </Link>
                   <div className="flex flex-col justify-center">
-                    <Link href={`/news/${artsNews[0]._id}`} className="block group mb-8">
+                    <Link href={`/news/${artsNews[0].slug || artsNews[0]._id}`} className="block group mb-8">
                       <h4 className="text-3xl md:text-5xl font-bold font-serif leading-tight mb-4 group-hover:text-slate-700 transition-colors">
                         {artsNews[0].title}
                       </h4>

@@ -12,6 +12,7 @@ interface News {
   imageUrl?: string;
   author: string;
   category?: string;
+  slug?: string;
   createdAt: string;
 }
 
@@ -74,7 +75,7 @@ export default function CategoryPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {news.map((item) => (
-            <Link key={item._id} href={`/news/${item._id}`} className="block group flex flex-col h-full">
+            <Link key={item._id} href={`/news/${item.slug || item._id}`} className="block group flex flex-col h-full">
               {item.imageUrl && (
                 <div className="w-full aspect-[3/2] bg-slate-100 relative mb-4 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
