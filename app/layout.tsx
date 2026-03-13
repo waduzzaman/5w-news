@@ -58,16 +58,6 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
               </Link>
             </div>
             
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-              <Link href="/category/world" className="hover:text-primary transition-colors">World</Link>
-              <Link href="/category/politics" className="hover:text-primary transition-colors">Politics</Link>
-              <Link href="/category/business" className="hover:text-primary transition-colors">Business</Link>
-              <Link href="/category/technology" className="hover:text-primary transition-colors">Tech</Link>
-              <Link href="/category/science" className="hover:text-primary transition-colors">Science</Link>
-              <Link href="/category/arts" className="hover:text-primary transition-colors">Arts</Link>
-            </nav>
-
             <div className="flex items-center gap-2">
               <button className="p-2 hover:bg-muted rounded-full transition-colors">
                 <Search className="h-5 w-5" />
