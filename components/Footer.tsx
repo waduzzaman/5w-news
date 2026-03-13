@@ -4,6 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const categories = [
+    { name: 'All News', href: '/' },
     { name: 'World', href: '/category/world' },
     { name: 'Technology', href: '/category/technology' },
     { name: 'Business', href: '/category/business' },
@@ -15,8 +16,23 @@ export default function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300 py-12 mt-12">
       <div className="container mx-auto px-4">
+        {/* Category Navigation Menu */}
+        <div className="border-t border-slate-800 py-8">
+          <nav className="flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm font-bold uppercase tracking-widest">
+            {categories.map((category) => (
+              <Link 
+                key={category.name} 
+                href={category.href} 
+                className="text-slate-400 hover:text-white transition-colors pb-1"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-8">
           {/* Brand Section */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="font-serif text-2xl font-bold text-white mb-4 block">

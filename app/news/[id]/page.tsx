@@ -1,58 +1,63 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ArrowLeft, Share2, Bookmark, MessageCircle } from 'lucide-react';
 import AdUnit from '@/components/AdUnit';
+import { connectDB } from '@/lib/db';
+import { News } from '@/models/Schema';
 
-interface News {
-  _id: string;
-  title: string;
-  content: string;
-  imageUrl?: string;
-  author: string;
-  category?: string;
-  createdAt: string;
+interface Props {
+  params: Promise<{ id: string }>;
 }
 
-export default function NewsArticle() {
-  const params = useParams();
-  const router = useRouter();
-  const [news, setNews] = useState<News | null>(null);
-  const [loading, setLoading] = useState(true);
+// Generate dynamic metadata for SEO
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  
+  try {
+    await connectDB();
+    const article = await News.findById(id);
+    
+    if (!article) {
+      return {
+        title: 'Article Not Found | The Daily Chronicle',
+      };
+    }
 
-  useEffect(() => {
-    if (!params.id) return;
-    fetch(`/api/news/${params.id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error('Not found');
-        return res.json();
-      })
-      .then((data) => {
-        setNews(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch news', err);
-        setLoading(false);
-      });
-  }, [params.id]);
-
-  if (loading) {
-    return <div className="text-center py-24 font-serif text-xl text-muted-foreground">Loading article...</div>;
+    return {
+      title: `${article.title} | The Daily Chronicle`,
+      description: article.content.substring(0, 160),
+      openGraph: {
+        title: article.title,
+        description: article.content.substring(0, 160),
+        type: 'article',
+        publishedTime: article.createdAt,
+        authors: [article.author],
+        section: article.category,
+        tags: [article.category],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: article.title,
+        description: article.content.substring(0, 160),
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'The Daily Chronicle',
+    };
   }
+}
 
-  if (!news) {
-    return (
-      <div className="text-center py-24">
-        <h2 className="text-3xl font-serif font-bold mb-6">Article not found</h2>
-        <Link href="/" className="inline-flex items-center justify-center px-6 py-3 border border-black hover:bg-black hover:text-white transition-colors font-medium uppercase tracking-wider text-sm">
-          Return to Homepage
-        </Link>
-      </div>
-    );
+export default async function NewsArticle({ params }: Props) {
+  const { id } = await params;
+  
+  await connectDB();
+  const article = await News.findById(id);
+  
+  if (!article) {
+    notFound();
   }
 
   return (
@@ -64,25 +69,28 @@ export default function NewsArticle() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to News
           </Link>
-          {news.category && (
-            <span className="text-xs font-bold uppercase tracking-widest text-black border border-black px-3 py-1">
-              {news.category}
-            </span>
+          {article.category && (
+            <Link 
+              href={`/category/${article.category.toLowerCase()}`}
+              className="text-xs font-bold uppercase tracking-widest text-black border border-black px-3 py-1 hover:bg-black hover:text-white transition-colors"
+            >
+              {article.category}
+            </Link>
           )}
         </div>
         
         <h1 className="text-4xl md:text-6xl font-bold font-serif leading-tight mb-6">
-          {news.title}
+          {article.title}
         </h1>
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-t border-b border-slate-200 py-4 mb-8">
           <div className="flex items-center gap-4 mb-4 sm:mb-0">
             <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center font-serif font-bold text-xl text-slate-600">
-              {news.author.charAt(0)}
+              {article.author.charAt(0)}
             </div>
             <div>
-              <div className="font-bold text-sm uppercase tracking-wider">{news.author}</div>
-              <div className="text-sm text-slate-500">{format(new Date(news.createdAt), 'MMMM d, yyyy • h:mm a')}</div>
+              <div className="font-bold text-sm uppercase tracking-wider">{article.author}</div>
+              <div className="text-sm text-slate-500">{format(new Date(article.createdAt), 'MMMM d, yyyy • h:mm a')}</div>
             </div>
           </div>
           
@@ -101,13 +109,13 @@ export default function NewsArticle() {
       </header>
 
       {/* Hero Image */}
-      {news.imageUrl && (
+      {article.imageUrl && (
         <div className="container mx-auto px-4 max-w-5xl mb-12">
           <div className="w-full aspect-video md:aspect-[21/9] bg-slate-100 relative overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
-              src={news.imageUrl} 
-              alt={news.title} 
+              src={article.imageUrl} 
+              alt={article.title} 
               className="object-contain w-full h-full" 
             />
           </div>
@@ -120,7 +128,7 @@ export default function NewsArticle() {
       {/* Article Content */}
       <div className="container mx-auto px-4 max-w-5xl pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-8 font-serif text-xl md:text-2xl leading-relaxed text-slate-800 space-y-8">
-          {news.content.split('\n\n').map((paragraph, index) => (
+          {article.content.split('\n\n').map((paragraph: string, index: number) => (
             <p key={index}>
               {index === 0 ? (
                 <span className="float-left text-6xl md:text-7xl font-bold leading-none pr-3 pt-2 text-black">
