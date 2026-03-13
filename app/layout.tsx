@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import { Search, Menu, UserCircle } from 'lucide-react';
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 const playfair = Playfair_Display({subsets:['latin'],variable:'--font-serif'});
@@ -47,28 +48,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en" className={cn("font-sans", inter.variable, playfair.variable)}>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        {/* Global Header */}
-        <header className="border-b border-border bg-background sticky top-0 z-50">
-          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button className="p-2 -ml-2 hover:bg-muted rounded-md md:hidden">
-                <Menu className="h-5 w-5" />
-              </button>
-              <Link href="/" className="font-serif text-2xl font-bold tracking-tight">
-                The Chronicle
-              </Link>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <button className="p-2 hover:bg-muted rounded-full transition-colors">
-                <Search className="h-5 w-5" />
-              </button>
-              <Link href="/login" className="p-2 hover:bg-muted rounded-full transition-colors">
-                <UserCircle className="h-5 w-5" />
-              </Link>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* Main Content */}
         <main className="flex-grow">

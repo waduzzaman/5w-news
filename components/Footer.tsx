@@ -5,11 +5,11 @@ export default function Footer() {
 
   const categories = [
     { name: 'World', href: '/category/world' },
-    { name: 'Politics', href: '/category/politics' },
-    { name: 'Business', href: '/category/business' },
     { name: 'Technology', href: '/category/technology' },
+    { name: 'Business', href: '/category/business' },
     { name: 'Science', href: '/category/science' },
     { name: 'Arts', href: '/category/arts' },
+    { name: 'Sports', href: '/category/sports' },
   ];
 
   return (
@@ -47,7 +47,7 @@ export default function Footer() {
                     href={category.href} 
                     className="hover:text-white transition-colors"
                   >
-                    {category.name} News
+                    {category.name}
                   </Link>
                 </li>
               ))}
